@@ -76,7 +76,7 @@ function piwigogallery_generategalleryhtml( $response, $limit ) {
  * @param string $url string for checking url
  * @return bool
  */
-function piwigogallery_validateurl( $url ) {
+function piwigogallery_validurl( $url ) {
     $checkValidUrl = filter_var( $url, FILTER_VALIDATE_URL );
     $checkIfUrlNotContainsWSAtEnd = strpos( $url, "/ws.php" ) === false;
 
@@ -106,7 +106,7 @@ function piwigogallery_render( $atts ) {
         'limit' => 20,
     ), $atts );
 
-    $validURL = piwigogallery_validateurl( $a['url'] );
+    $validURL = piwigogallery_validurl( $a['url'] );
     $validLimit = piwigogallery_validlimit( $a['limit'] );
 
     if( $validURL && $validLimit ) {
@@ -117,7 +117,7 @@ function piwigogallery_render( $atts ) {
             __( 'Piwigo Gallery Alert', 'piwigogallery' ), 
             $resp->get_error_messages() 
             );
-            
+
             return $html;
         }
 
