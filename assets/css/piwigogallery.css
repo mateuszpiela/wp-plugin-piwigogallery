@@ -1,0 +1,30 @@
+.piwigogallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.piwigogallery .card {
+    width: 200px;
+    text-align: center;
+    text-decoration: none;
+    border: silver 1px solid;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.piwigogallery .card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 3 / 2;
+}
+
+.piwigogallery .caption {
+    margin-top: 10px;
+}
+
+.piwigogallery .caption-title {
+    font-weight: bold;
+}
