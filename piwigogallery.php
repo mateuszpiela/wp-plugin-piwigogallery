@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
  * Plugin Name: Piwigo Gallery
  * Plugin URI: https://github.com/mateuszpiela/wp-plugin-piwigogallery
  * Description: Plugin for wordpress to show from piwigo galleries on shortcode
- * Version: 0.0.1
+ * Version: 0.0.2
  * Requires at least: 6.4.3
  * Requires PHP: 8.0
  * Author: Mateusz Pieła
