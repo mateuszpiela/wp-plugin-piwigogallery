@@ -101,7 +101,7 @@ function piwigogallery_validlimit( $limit ) {
  */
 function piwigogallery_sanitizedata( $a ) {
     $a['url'] = filter_var( $a['url'], FILTER_SANITIZE_URL );
-    $a['limit'] = filter_var( $a['limit'], FILTER_SANITIZE_NUMBER_INT );
+    $a['limit'] = (int)filter_var( $a['limit'], FILTER_SANITIZE_NUMBER_INT );
 
     return $a;
 }
