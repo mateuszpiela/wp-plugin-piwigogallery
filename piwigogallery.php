@@ -53,8 +53,8 @@ function piwigogallery_generategalleryhtml( $response, $limit ) {
             break;
         }
 
-        $title = filter_var( $album['name'], FILTER_SANITIZE_STRING );
-        $comment = filter_var( $album['comment'], FILTER_SANITIZE_STRING );
+        $title = htmlspecialchars( $album['name'] );
+        $comment = htmlspecialchars( $album['comment'] );
         $thumbnail_url = filter_var( $album['tn_url'], FILTER_SANITIZE_URL );
         $url = filter_var( $album['url'], FILTER_SANITIZE_URL );
 
