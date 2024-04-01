@@ -53,10 +53,10 @@ function piwigogallery_generategalleryhtml( $response, $limit ) {
             break;
         }
 
-        $title = $album['name'];
-        $comment = $album['comment'];
-        $thumbnail_url = $album['tn_url'];
-        $url = $album['url'];
+        $title = filter_var( $album['name'], FILTER_SANITIZE_STRING );
+        $comment = filter_var( $album['comment'], FILTER_SANITIZE_STRING );
+        $thumbnail_url = filter_var( $album['tn_url'], FILTER_SANITIZE_URL );
+        $url = filter_var( $album['url'], FILTER_SANITIZE_URL );
 
         $html .= sprintf( '<a target="_blank" href="%s" class="card">', $url );
         $html .= sprintf( ' <img src="%s" alt="%s">', $thumbnail_url, $title );
@@ -77,10 +77,10 @@ function piwigogallery_generategalleryhtml( $response, $limit ) {
  * @return bool
  */
 function piwigogallery_validurl( $url ) {
-    $checkValidUrl = filter_var( $url, FILTER_VALIDATE_URL );
-    $checkIfUrlNotContainsWSAtEnd = strpos( $url, "/ws.php" ) === false;
+    $check_valid_url = filter_var( $url, FILTER_VALIDATE_URL );
+    $check_if_url_not_contains_ws_at_end = strpos( $url, "/ws.php" ) === false;
 
-    return $checkValidUrl && $checkIfUrlNotContainsWSAtEnd;
+    return $check_valid_url && $check_if_url_not_contains_ws_at_end;
 }
 
 /**
@@ -91,6 +91,19 @@ function piwigogallery_validurl( $url ) {
  */
 function piwigogallery_validlimit( $limit ) {
     return is_int($limit) && $limit > 0;
+}
+
+/**
+ * Sanitize input data
+ * 
+ * @param array $a shortcode attributes 
+ * @return array
+ */
+function piwigogallery_sanitizedata( $a ) {
+    $a['url'] = filter_var( $a['url'], FILTER_SANITIZE_URL );
+    $a['limit'] = filter_var( $a['limit'], FILTER_SANITIZE_NUMBER_INT );
+
+    return $a;
 }
 
 /**
@@ -106,10 +119,12 @@ function piwigogallery_render( $atts ) {
         'limit' => 20,
     ), $atts );
 
-    $validURL = piwigogallery_validurl( $a['url'] );
-    $validLimit = piwigogallery_validlimit( $a['limit'] );
+    $a = piwigogallery_sanitizedata( $a );
 
-    if( $validURL && $validLimit ) {
+    $valid_url = piwigogallery_validurl( $a['url'] );
+    $valid_limit = piwigogallery_validlimit( $a['limit'] );
+
+    if( $valid_url && $valid_limit ) {
         $resp = piwigogallery_callapiforcattegorylist( $a['url'] );
         
         if( is_wp_error( $resp ) ) {
