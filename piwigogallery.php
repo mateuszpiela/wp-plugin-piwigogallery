@@ -148,6 +148,29 @@ function piwigogallery_render( $atts ) {
 add_shortcode( 'piwigogallery', 'piwigogallery_render' );
 
 function piwigogallery_stylesheet() {
-    wp_enqueue_style( 'piwigogallery', plugins_url('/assets/css/piwigogallery.css', __FILE__) );
+    $options = get_option( 'piwigogallery_options' );
+
+    if( !$options['disable_builtin_css'] ){
+        wp_enqueue_style( 'piwigogallery', plugins_url('/assets/css/piwigogallery.css', __FILE__) );
+    }
 }
 add_action( 'wp_footer', 'piwigogallery_stylesheet' );
+
+function piwigogallery_activationhook() {
+    $options = array(
+        'disable_builtin_css' => 'false'
+    );
+    add_option( 'piwigogallery_options', $options );
+}
+register_activation_hook(
+    __FILE__,
+    'piwigogallery_activationhook'
+);
+
+function piwigogallery_uninstallhook() {
+    delete_option( 'piwigogallery_options' );
+}
+register_uninstall_hook(
+    __FILE__,
+    'piwigogallery_uninstallhook'
+);
