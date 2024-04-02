@@ -150,7 +150,7 @@ add_shortcode( 'piwigogallery', 'piwigogallery_render' );
 function piwigogallery_stylesheet() {
     $options = get_option( 'piwigogallery_options' );
 
-    if( !$options['disable_builtin_css'] ){
+    if( !(bool)$options['disable_builtin_css'] ){
         wp_enqueue_style( 'piwigogallery', plugins_url('/assets/css/piwigogallery.css', __FILE__) );
     }
 }
@@ -174,3 +174,86 @@ register_uninstall_hook(
     __FILE__,
     'piwigogallery_uninstallhook'
 );
+
+/*
+ * Admin panel settings code under this comment
+ */ 
+function piwigogallery_settings_init() {
+    register_setting( 'piwigogallery', 'piwigogallery_options' );
+
+    add_settings_section(
+        'piwigogallery_options',
+        __( 'General options', 'piwigogallery' ), 'piwigogallery_options_callback',
+        'piwigogallery'
+    );
+
+    add_settings_field(
+        'piwigogallery_field_cssbuiltindisable',
+        __( 'Disable builtin CSS rules? ', 'piwigogallery' ),
+        'piwigogallery_field_cssbuiltindisable_cb',
+        'piwigogallery',
+        'piwigogallery_options',
+        array(
+            'label_for' => 'disable_builtin_css',
+            'class' => 'piwigogallery_row',
+            'piwigogallery_custom_data' => 'custom',
+        )
+        );
+
+}
+add_action( 'admin_init', 'piwigogallery_settings_init' );
+
+function piwigogallery_options_callback( $args ) {
+
+}
+
+function piwigogallery_field_cssbuiltindisable_cb( $args ) {
+    $options = get_option('piwigogallery_options');
+    ?>
+    <input 
+        type="checkbox" 
+        id="<?php echo esc_attr( $args['label_for'] ); ?>" 
+        name="piwigogallery_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
+        value="true"
+        <?php echo isset( $options[ $args['label_for'] ] ) ? ( checked( (bool)$options[ $args['label_for'] ], true, false ) ) : ( '' ); ?>
+        >
+        
+    <?php
+}
+
+function piwigogallery_options_menu() {
+	add_submenu_page(
+		'upload.php',
+		__( 'Piwigo Gallery Options', 'piwigogallery' ),
+        __( 'Piwigo Gallery Options', 'piwigogallery' ),
+		'manage_options',
+		'piwigogallery-options',
+		'piwigogallery_options_cb'
+	);
+}
+add_action( 'admin_menu', 'piwigogallery_options_menu' );
+
+function piwigogallery_options_cb() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+    if ( isset( $_GET['settings-updated'] ) ) {
+		// add settings saved message with the class of "updated"
+		add_settings_error( 'piwigogallery_messages', 'piwigogallery_message', __( 'Settings Saved', 'piwigogallery' ), 'updated' );
+	}
+
+    settings_errors( 'piwigogallery_messages' );
+    ?>
+	<div class="wrap">
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+                settings_fields( 'piwigogallery' );
+                do_settings_sections( 'piwigogallery' );
+                submit_button( __( 'Save Settings', 'piwigogallery' ));
+            ?>
+        </form>
+	</div>
+	<?php
+}
